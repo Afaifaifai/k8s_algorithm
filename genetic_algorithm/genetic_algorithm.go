@@ -2,7 +2,7 @@ package genetic_algorithm
 
 import (
 	"fmt"
-	s "k8s_algorithm/settings"
+	s "k8s_algorithm/tools"
 	"math"
 	"math/rand"
 	"sort"
@@ -27,45 +27,45 @@ func Run(items_weights [][s.DIMENSION]float64,
 		Previous_state_of_knapsack: previous_state_of_knapsack,
 		Limit_of_knapsack:          limit_of_knapsack,
 	}
-	matrix_iw := transform_matrix(data.Items_weights)
+	matrix_iw := Transform_matrix(data.Items_weights)
 
 	var best_fitness float64 = math.MaxFloat64
 	var best_fitness_solution [s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64
 	var best_fitness_in_iterations []float64
 
-	var solutions [][s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64 = data.generate_solutions()
+	var solutions [][s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64 = data.Generate_solutions()
 	for iter := 0; iter < s.GA_ITERATIONS; iter++ {
 		// The sum of the weights of the items in each knapsack is used to measure the value of a solution
 		// fmt.Println(len(solutions))
 		var fitness_of_solutions []float64 = make([]float64, s.SOLUTION_SIZE)
 		for i := 0; i < s.SOLUTION_SIZE; i++ {
-			var knapsack_weights [][s.KNAPSACK_QUANTITY]float64 = data.calculate_knapsack_weights(&solutions[i], matrix_iw) // DIMENSION * KNAPSACK_QUANTITY
-			fitness_of_solutions[i] = data.calculate_fitness(knapsack_weights)
+			var knapsack_weights [][s.KNAPSACK_QUANTITY]float64 = data.Calculate_knapsack_weights(&solutions[i], matrix_iw) // DIMENSION * KNAPSACK_QUANTITY
+			fitness_of_solutions[i] = data.Calculate_fitness(knapsack_weights)
 		}
 
 		// Select  -->  Crossover  -->  Mutate
-		var elite_parents [][s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64 = selection(solutions, fitness_of_solutions)
+		var elite_parents [][s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64 = Selection(solutions, fitness_of_solutions)
 		for i := 0; i < s.ELITE_QUANTITY; i++ {
 			for j := i + 1; j < s.ELITE_QUANTITY; j++ {
-				var child1, child2 *[s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64 = crossover(&elite_parents[i], &elite_parents[j])
-				mutate(child1)
-				mutate(child2)
+				var child1, child2 *[s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64 = Crossover(&elite_parents[i], &elite_parents[j])
+				Mutate(child1)
+				Mutate(child2)
 
-				var child1_weights [][s.KNAPSACK_QUANTITY]float64 = data.calculate_knapsack_weights(child1, matrix_iw) // DIMENSION * KNAPSACK_QUANTITY
-				if is_under_limit(child1_weights, data.Limit_of_knapsack) {
+				var child1_weights [][s.KNAPSACK_QUANTITY]float64 = data.Calculate_knapsack_weights(child1, matrix_iw) // DIMENSION * KNAPSACK_QUANTITY
+				if Is_under_limit(child1_weights, data.Limit_of_knapsack) {
 					solutions = append(solutions, *child1)
-					fitness_of_solutions = append(fitness_of_solutions, data.calculate_fitness(child1_weights))
+					fitness_of_solutions = append(fitness_of_solutions, data.Calculate_fitness(child1_weights))
 				}
 
-				var child2_weights [][s.KNAPSACK_QUANTITY]float64 = data.calculate_knapsack_weights(child2, matrix_iw) // DIMENSION * KNAPSACK_QUANTITY
-				if is_under_limit(child2_weights, data.Limit_of_knapsack) {
+				var child2_weights [][s.KNAPSACK_QUANTITY]float64 = data.Calculate_knapsack_weights(child2, matrix_iw) // DIMENSION * KNAPSACK_QUANTITY
+				if Is_under_limit(child2_weights, data.Limit_of_knapsack) {
 					solutions = append(solutions, *child2)
-					fitness_of_solutions = append(fitness_of_solutions, data.calculate_fitness(child2_weights))
+					fitness_of_solutions = append(fitness_of_solutions, data.Calculate_fitness(child2_weights))
 				}
 			}
 		}
 
-		var fitness_sort_in_idx []int = argsort(fitness_of_solutions)
+		var fitness_sort_in_idx []int = Argsort(fitness_of_solutions)
 		var new_gen_solutions [][s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64 = make([][s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64, s.SOLUTION_SIZE)
 		for idx := 0; idx < s.SOLUTION_SIZE; idx++ {
 			new_gen_solutions[idx] = solutions[fitness_sort_in_idx[idx]]
@@ -85,8 +85,8 @@ func Run(items_weights [][s.DIMENSION]float64,
 	return best_fitness, best_fitness_solution, best_fitness_in_iterations
 }
 
-func selection(solutions [][s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64, fitness_of_solutions []float64) [][s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64 {
-	var fitness_sort_in_idx []int = argsort(fitness_of_solutions)
+func Selection(solutions [][s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64, fitness_of_solutions []float64) [][s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64 {
+	var fitness_sort_in_idx []int = Argsort(fitness_of_solutions)
 	var elite_parents [][s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64 = make([][4][1000]float64, s.ELITE_QUANTITY)
 	for i := 0; i < s.ELITE_QUANTITY; i++ {
 		elite_parents[i] = solutions[fitness_sort_in_idx[i]]
@@ -94,7 +94,7 @@ func selection(solutions [][s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64, fitnes
 	return elite_parents
 }
 
-func crossover(
+func Crossover(
 	parent1 *[s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64,
 	parent2 *[s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64,
 ) (*[s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64, *[s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64) {
@@ -117,7 +117,7 @@ func crossover(
 
 }
 
-func mutate(child *[s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64) {
+func Mutate(child *[s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64) {
 	for item_idx := 0; item_idx < s.ITEM_QUANTITY; item_idx++ {
 		if rand.Float64() < s.MUTATION_RATE {
 			var random_knapsack_idx int = int(distuv.Uniform{Min: 0, Max: float64(s.KNAPSACK_QUANTITY)}.Rand())
@@ -129,7 +129,7 @@ func mutate(child *[s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64) {
 	}
 }
 
-func (data *Data) calculate_knapsack_weights(
+func (data *Data) Calculate_knapsack_weights(
 	solution *[s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64,
 	matrix_iw *mat.Dense,
 ) [][s.KNAPSACK_QUANTITY]float64 {
@@ -151,7 +151,7 @@ func (data *Data) calculate_knapsack_weights(
 
 }
 
-func (data *Data) calculate_fitness(knapsack_weights [][s.KNAPSACK_QUANTITY]float64) float64 { // DIMENSION * KNAPSACK_QUANTITY
+func (data *Data) Calculate_fitness(knapsack_weights [][s.KNAPSACK_QUANTITY]float64) float64 { // DIMENSION * KNAPSACK_QUANTITY
 	var fitness float64 = 0
 	for i := 0; i < len(knapsack_weights); i++ {
 		for j := 0; j < len(knapsack_weights[0]); j++ {
@@ -165,7 +165,7 @@ func (data *Data) calculate_fitness(knapsack_weights [][s.KNAPSACK_QUANTITY]floa
 	return fitness
 }
 
-func transform_matrix(ary [][s.DIMENSION]float64) *mat.Dense {
+func Transform_matrix(ary [][s.DIMENSION]float64) *mat.Dense {
 	row := len(ary)
 	col := len(ary[0])
 	var data []float64
@@ -179,7 +179,7 @@ func transform_matrix(ary [][s.DIMENSION]float64) *mat.Dense {
 	return mat.NewDense(row, col, data)
 }
 
-func argsort(ary []float64) []int {
+func Argsort(ary []float64) []int {
 	var results []int = make([]int, len(ary))
 	for i := 0; i < len(ary); i++ {
 		results[i] = i
@@ -190,7 +190,7 @@ func argsort(ary []float64) []int {
 	return results
 }
 
-func is_under_limit(knapsack_weights [][s.KNAPSACK_QUANTITY]float64, limit_of_knapsack [][s.DIMENSION]float64) bool {
+func Is_under_limit(knapsack_weights [][s.KNAPSACK_QUANTITY]float64, limit_of_knapsack [][s.DIMENSION]float64) bool {
 	for i := 0; i < len(knapsack_weights); i++ {
 		for j := 0; j < s.KNAPSACK_QUANTITY; j++ {
 			if knapsack_weights[i][j] > limit_of_knapsack[j][i] {

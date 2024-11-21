@@ -1,15 +1,14 @@
-package main
+package tools
 
 import (
 	"bufio"
 	"fmt"
-	"k8s_algorithm/settings"
 	"os"
 	"strconv"
 	"strings"
 )
 
-func read_data(filename string) [][settings.DIMENSION]float64 {
+func Read_data(filename string) [][DIMENSION]float64 {
 	file, err := os.Open(filename)
 	if err != nil {
 		fmt.Println("Cannot locate the file:", err)
@@ -18,13 +17,13 @@ func read_data(filename string) [][settings.DIMENSION]float64 {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	var results [][settings.DIMENSION]float64
+	var results [][DIMENSION]float64
 
 	for scanner.Scan() {
 		line := scanner.Text()
 
 		values := strings.Split(line, " ")
-		var nums_dim [settings.DIMENSION]float64
+		var nums_dim [DIMENSION]float64
 		for dim, value := range values {
 			// fmt.Println(value)
 			var num float64

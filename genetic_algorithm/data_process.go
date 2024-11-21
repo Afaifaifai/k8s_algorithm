@@ -1,7 +1,7 @@
 package genetic_algorithm
 
 import (
-	s "k8s_algorithm/settings"
+	s "k8s_algorithm/tools"
 
 	"gonum.org/v1/gonum/stat/distuv"
 )
@@ -22,7 +22,7 @@ func (data *Data) generate_uniform_population() ([]int, [][s.DIMENSION]float64) 
 	return population, knapsack_weights
 }
 
-func (data *Data) generate_solutions() [][s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64 {
+func (data *Data) Generate_solutions() [][s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64 {
 	var solutions [][s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64 = make([][s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64, s.SOLUTION_SIZE)
 	for i := 0; i < s.SOLUTION_SIZE; i++ {
 		var population []int                        // items pick knapsack

@@ -44,20 +44,45 @@ func Run(
 	particles, gBest_fitness, gBest_position = init_particles()
 
 	for iter := 0; iter < s.PSO_ITERATIONS; iter++ {
+		var v_abs_max, v_abs_min float64 = 0, math.MaxFloat64
 		for i := 0; i < s.PARTICLE_QUANTITY; i++ {
 			var particle *Particle = &particles[i]
-			particle.update_velocity(gBest_position)
-			particle.update_position()
-			particle.update_fitness_and_pBest()
-			if particle.pBest_fitness < gBest_fitness && particle.pBest_fitness > 0 {
-				gBest_fitness = particle.pBest_fitness
-				copy(gBest_position, particle.pBest_position)
+			new_max_v, new_min_v := particle.update_velocity(gBest_position)
+
+			if v_abs_max < new_max_v {
+				v_abs_max = new_max_v
 			}
-			gBest_fitness_in_iterations = append(gBest_fitness_in_iterations, gBest_fitness)
+
+			if v_abs_min > new_min_v {
+				v_abs_min = new_min_v
+			}
+		}
+
+		var iter_gBest_fitness float64 = math.MaxFloat64
+		var iter_gBest_position []int = make([]int, s.ITEM_QUANTITY)
+		for i := 0; i < s.PARTICLE_QUANTITY; i++ {
+			var particle *Particle = &particles[i]
+			particle.update_position(v_abs_max, v_abs_min)
+			particle.update_fitness_and_pBest()
+
+			if particle.fitness < iter_gBest_fitness {
+				iter_gBest_fitness = particle.fitness
+				copy(iter_gBest_position, particle.pBest_position)
+			}
 			// fmt.Printf("%.2f ", particle.fitness)
 		}
-		fmt.Println("\nIteration", iter, "Best fitness", gBest_fitness)
+
+		if iter_gBest_fitness < gBest_fitness {
+			gBest_fitness = iter_gBest_fitness
+			copy(gBest_position, iter_gBest_position)
+		}
+
+		gBest_fitness_in_iterations = append(gBest_fitness_in_iterations, gBest_fitness)
+		if iter%100 == 0 {
+			fmt.Printf("Iteration %d \tGlobal Best fitness %.10f  \tIteration Best position %.10f \n", iter, gBest_fitness, iter_gBest_fitness)
+		}
 	}
+	fmt.Println("\nIteration End", "Best fitness", gBest_fitness)
 	return gBest_fitness, gBest_position, gBest_fitness_in_iterations
 }
 
@@ -72,15 +97,17 @@ func (particle *Particle) update_fitness_and_pBest() {
 
 	// var over_weight bool = false
 	var penalty float64 = 0.0
+	var under_limit bool = true
 	for dim := 0; dim < s.DIMENSION; dim++ {
 		for ks_idx := 0; ks_idx < s.KNAPSACK_QUANTITY; ks_idx++ { // Plus previous weight of n dimensions
 			knapsack_weights[dim][ks_idx] += Previous_state_of_knapsack[ks_idx][dim]
-			// if !is_under_limit(&knapsack_weights) {
-			// 	// knapsack_weights[dim][ks_idx] = 1.5 * Limit_of_knapsack[ks_idx][dim]
-			// 	over_weight = true
-			// }
 			knapsack_weights[dim][ks_idx] /= Limit_of_knapsack[ks_idx][dim] // Calculate the percentage of each knapsack in n dimensions
-			penalty += knapsack_weights[dim][ks_idx] - 1                    // (Weight / Weight_Limit) - 1 : if Weight > Weight_Limit, then (Weight / Weight_Limit) > 1
+
+			if knapsack_weights[dim][ks_idx] > 1 {
+				penalty += knapsack_weights[dim][ks_idx] - 1 // (Weight / Weight_Limit) - 1 : if Weight > Weight_Limit, then (Weight / Weight_Limit) > 1
+				under_limit = false
+			}
+
 		}
 	}
 
@@ -89,7 +116,7 @@ func (particle *Particle) update_fitness_and_pBest() {
 		fitness += stat.StdDev(knapsack_weights[dim][:], nil) // fitness is the sum of the standard deviation of n dimensions
 	}
 
-	if is_under_limit(&knapsack_weights) {
+	if under_limit {
 		particle.fitness = fitness // Punishment strategy is to make fitness larger
 	} else {
 		particle.fitness = fitness + penalty*s.LAMBDA
@@ -102,29 +129,39 @@ func (particle *Particle) update_fitness_and_pBest() {
 	}
 }
 
-func (particle *Particle) update_velocity(gBest_position []int) { // v
+func (particle *Particle) update_velocity(gBest_position []int) (float64, float64) { // v
 	// w : inertia weight
 	// c1, c2 : cognitive and social parameters
 	// r1, r2 : random numbers in [0, 1]
 	var new_velocity []float64 = make([]float64, s.ITEM_QUANTITY)
-
+	var w, c1, c2 float64 = s.W, s.C1, s.C2
+	var max_abs_v float64 = 0
+	var min_abs_v float64 = math.MaxFloat64
 	for i := 0; i < s.ITEM_QUANTITY; i++ {
-		var w, c1, c2, r1, r2 float64 = s.W, s.C1, s.C2, rand.Float64(), rand.Float64()
+		var r1, r2 float64 = rand.Float64(), rand.Float64()
 
 		new_velocity[i] = w*particle.Velocity[i] +
 			c1*r1*float64(particle.pBest_position[i]-particle.Position[i]) +
 			c2*r2*float64(gBest_position[i]-particle.Position[i])
+
+		if math.Abs(new_velocity[i]) > max_abs_v {
+			max_abs_v = new_velocity[i]
+		}
+		if math.Abs(new_velocity[i]) < min_abs_v {
+			min_abs_v = new_velocity[i]
+		}
 	}
 	particle.Velocity = new_velocity
+	return max_abs_v, min_abs_v
 }
 
-func (particle *Particle) update_position() {
+func (particle *Particle) update_position(v_abs_max float64, v_abs_min float64) {
 	// x = sigmoid(v)
 	var position []int = make([]int, s.ITEM_QUANTITY)
 	for i := 0; i < s.ITEM_QUANTITY; i++ {
-		var x float64 = particle.Velocity[i]
-		var y float64 = inverse_function(x) // if x -> 0, then y -> 0, else y -> 1
-		if rand.Float64() < y {             // y is the probability of staying in the same position
+		var probability float64 = inverse_function(particle.Velocity[i], v_abs_max, v_abs_min) // if x -> 0, then y -> 1, else y -> 0
+		// fmt.Println(probability)
+		if rand.Float64() < probability { // y is the probability of staying in the same position
 			position[i] = rand.Intn(s.KNAPSACK_QUANTITY)
 		} else {
 			position[i] = particle.Position[i]
@@ -144,19 +181,6 @@ func init_particles() ([]Particle, float64, []int) { // return the number of sol
 			velocity[j] = rand.Float64()*2 - 1 // (-1, 1)
 		}
 
-		// var knapsack_weights [s.DIMENSION][s.KNAPSACK_QUANTITY]float64
-		// for _, ks_idx := range position { // Current weight of n dimensions
-		// 	for dim := 0; dim < s.DIMENSION; dim++ {
-		// 		knapsack_weights[dim][ks_idx] += Items_weights[ks_idx][dim] + Previous_state_of_knapsack[ks_idx][dim]
-		// 		if knapsack_weights[dim][ks_idx] > Limit_of_knapsack[ks_idx][dim] {
-		// 			knapsack_weights[dim][ks_idx] = 1.5 * Limit_of_knapsack[ks_idx][dim]
-		// 		}
-		// 	}
-		// }
-		// for is_under_limit(&position) {
-
-		// }
-
 		var particle Particle = Particle{
 			Velocity:       velocity,
 			Position:       position,
@@ -165,7 +189,7 @@ func init_particles() ([]Particle, float64, []int) { // return the number of sol
 			pBest_fitness:  math.MaxFloat64,
 		}
 		particle.update_fitness_and_pBest()
-		if particle.pBest_fitness < gBest_fitness && particle.pBest_fitness > 0 {
+		if particle.pBest_fitness < gBest_fitness {
 			gBest_fitness = particle.pBest_fitness
 			copy(gBest_position, particle.pBest_position)
 		}
@@ -179,26 +203,29 @@ func init_particles() ([]Particle, float64, []int) { // return the number of sol
 // 	return 1 / (1 + math.Exp(-x))
 // }
 
-func inverse_function(x float64) float64 { // if x -> 0, then y -> 0, else y -> 1
-	return 1 / (1 + math.Abs(x))
+func inverse_function(x float64, max_x float64, min_x float64) float64 {
+	// if x -> 0, then y -> ε
+	// if x -> max_x, then y -> 1    (max_x is an absolute value)
+	min_x *= min_x
+	return s.EPSILON + (1-s.EPSILON)*(math.Abs(x))/max_x
 }
 
-func is_under_limit(knapsack_weights *[s.DIMENSION][s.KNAPSACK_QUANTITY]float64) bool {
-	for dim := 0; dim < s.DIMENSION; dim++ {
-		for ks_idx := 0; ks_idx < s.KNAPSACK_QUANTITY; ks_idx++ {
-			if knapsack_weights[dim][ks_idx] > Limit_of_knapsack[ks_idx][dim] {
-				return false
-			}
-		}
-	}
-	return true
-}
+// func is_under_limit(knapsack_weights *[s.DIMENSION][s.KNAPSACK_QUANTITY]float64) bool {
+// 	for dim := 0; dim < s.DIMENSION; dim++ {
+// 		for ks_idx := 0; ks_idx < s.KNAPSACK_QUANTITY; ks_idx++ {
+// 			if knapsack_weights[dim][ks_idx] > Limit_of_knapsack[ks_idx][dim] {
+// 				return false
+// 			}
+// 		}
+// 	}
+// 	return true
+// }
 
 func generate_valid_position() []int {
 	var position []int = make([]int, s.ITEM_QUANTITY)
 
 Outer_loop:
-	for true {
+	for {
 		var knapsack_weights [s.DIMENSION][s.KNAPSACK_QUANTITY]float64
 
 		for i := 0; i < s.ITEM_QUANTITY; i++ {

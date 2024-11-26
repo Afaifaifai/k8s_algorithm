@@ -21,13 +21,15 @@ const SELECTION_RATE float64 = 0.4
 const ELITE_QUANTITY = int(float64(SOLUTION_SIZE) * SELECTION_RATE)
 
 // PSO parameters
-const PSO_ITERATIONS int = 100
+const PSO_ITERATIONS int = 100000
 const PARTICLE_QUANTITY int = 100
 const LAMBDA float64 = 5
 
 const W = 0.729
 const C1 = 1.49445
 const C2 = 1.49445
+
+const EPSILON float64 = 1 / float64(ITEM_QUANTITY) * 5 // basic exploration rate
 
 // Hybrid genetic algorithm parameters
 // GA

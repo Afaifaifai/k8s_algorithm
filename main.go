@@ -3,10 +3,9 @@ package main
 import (
 	"fmt"
 	GA "k8s_algorithm/genetic_algorithm"
-
-	// PSO "k8s_algorithm/particle_swarm_optimization"
-	// HGA "k8s_algorithm/hybrid_genetic_algorithm"
 	"k8s_algorithm/tools"
+	// HGA "k8s_algorithm/hybrid_genetic_algorithm"
+	// "k8s_algorithm/tools"
 )
 
 func main() {

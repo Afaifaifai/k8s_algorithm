@@ -1,5 +1,7 @@
 package tools
 
+import "math"
+
 const DIMENSION int = 3             // the dimantion of parameters
 const WORKER_NODES_QUANTITY int = 4 // the number of worker nodes
 
@@ -15,7 +17,7 @@ const ITEM_QUANTITY int = 1000                      // the number of items
 const POPULATION_SIZE = ITEM_QUANTITY         // each item pick a  knapsack
 const SOLUTION_SIZE int = 100                 // the number of solutions
 const CHROMOSOME_QUANTITY int = SOLUTION_SIZE // the number of solutions
-const GA_ITERATIONS int = 1000
+const GA_ITERATIONS int = 100
 const MUTATION_RATE float64 = 0.1
 const CROSSOVER_RATE float64 = 0.9
 const SELECTION_RATE float64 = 0.4
@@ -47,3 +49,8 @@ const SA_ITERATIONS int = 100
 const INITIAL_TEMPERATURE float64 = 1000
 const COOLING_RATE float64 = 0.95
 const MINIMUM_TEMPERATURE float64 = 1e-3
+
+// NSGA
+var NSGA_MAX_FITNESSES [DIMENSION]float64 = [DIMENSION]float64{math.MaxFloat64, math.MaxFloat64, math.MaxFloat64}
+
+const NSGA_MAX_DISTANCE float64 = math.MaxFloat64/float64(DIMENSION) - 0.1

@@ -9,12 +9,13 @@ const WEIGHT_LIMIT_FILE string = "data/knapsack.txt"      // the weight limit of
 const DATA_SPLIT string = " "                             // the split character that seperate the data in a line
 
 const KNAPSACK_QUANTITY int = WORKER_NODES_QUANTITY // the quantity of worker nodes is mapped to the quantity of knapsacks
-const SOLUTION_SIZE int = 100                       // the number of solutions
 const ITEM_QUANTITY int = 1000                      // the number of items
 
 // Genetic algorithm parameters
-const POPULATION_SIZE = ITEM_QUANTITY // each item pick a  knapsack
-const GA_ITERATIONS int = 100
+const POPULATION_SIZE = ITEM_QUANTITY         // each item pick a  knapsack
+const SOLUTION_SIZE int = 100                 // the number of solutions
+const CHROMOSOME_QUANTITY int = SOLUTION_SIZE // the number of solutions
+const GA_ITERATIONS int = 1000
 const MUTATION_RATE float64 = 0.1
 const CROSSOVER_RATE float64 = 0.9
 const SELECTION_RATE float64 = 0.4
@@ -33,7 +34,7 @@ const EPSILON float64 = 1 / float64(ITEM_QUANTITY) * 5 // basic exploration rate
 
 // Hybrid genetic algorithm parameters
 // GA
-const HGA_ITERATIONS int = 100
+const HGA_ITERATIONS int = 1000
 const HGA_MUTATION_RATE float64 = 0.1
 const HGA_CROSSOVER_RATE float64 = 0.9
 const HGA_SELECTION_RATE float64 = 0.4

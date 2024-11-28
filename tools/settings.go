@@ -54,3 +54,11 @@ const MINIMUM_TEMPERATURE float64 = 1e-3
 var NSGA_MAX_FITNESSES [DIMENSION]float64 = [DIMENSION]float64{math.MaxFloat64, math.MaxFloat64, math.MaxFloat64}
 
 const NSGA_MAX_DISTANCE float64 = math.MaxFloat64/float64(DIMENSION) - 0.1
+
+// ABC
+const COLONY_SIZE int = 100
+const ABC_MAX_ITERATIONS int = 1000
+const SCOUT_LIMIT int = 100
+const ABC_LAMBDA float64 = LAMBDA
+const EMPLOYED_BEE_QUANTITY int = COLONY_SIZE
+const ONLOOKER_BEE_QUANTITY int = COLONY_SIZE

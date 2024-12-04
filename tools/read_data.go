@@ -55,6 +55,7 @@ func Read_data(filename string) [][DIMENSION]float64 {
 
 func Write_data(record [][]int, order []string) {
 	// 1. 將每個切片轉換為字串，並在每行前加上行號
+	mkdir(RESULT_DIR)
 	var lines []string
 	for i, row := range record {
 		// 將每個 row 轉為字串，例如 [1, 2, 3] => "1, 2, 3"
@@ -69,7 +70,7 @@ func Write_data(record [][]int, order []string) {
 	timestamp := time.Now().Format("20060102_150405") // 格式：YYYYMMDD_HHMMSS
 
 	// 3. 使用時間戳作為檔案名稱
-	fileName := timestamp
+	fileName := fmt.Sprintf("%s%s", RESULT_DIR, timestamp)
 
 	// 4. 將內容寫入檔案
 	err := os.WriteFile(fileName, []byte(content), 0644) // 0644 表示可讀寫權限
@@ -131,4 +132,19 @@ func Transform_1dim() {
 		}
 	}
 
+}
+
+func mkdir(dir string) error {
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		// 若目錄不存在，創建目錄
+		err := os.MkdirAll(dir, os.ModePerm)
+		if err != nil {
+			fmt.Printf("無法創建目錄: %v\n", err)
+			return err
+		}
+		fmt.Println("目錄已成功創建:", dir)
+	} else {
+		fmt.Println("目錄已存在:", dir)
+	}
+	return nil
 }

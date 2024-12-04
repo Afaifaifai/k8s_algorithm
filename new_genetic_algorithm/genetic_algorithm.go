@@ -57,6 +57,7 @@ func Run(
 
 func selection(chromosomes []Chromosome) []Chromosome {
 	var elite_parents []Chromosome = make([]Chromosome, s.ELITE_QUANTITY)
+	// fmt.Println(len(chromosomes))
 	for i := 0; i < s.ELITE_QUANTITY; i++ {
 		elite_parents[i] = chromosomes[i]
 	}
@@ -107,6 +108,7 @@ func born(genes []int) Chromosome {
 
 func replacement(chromosomes []Chromosome) []Chromosome {
 	chromosomes = argsort(chromosomes)
+	// fmt.Println(len(chromosomes))
 	var new_generation []Chromosome = make([]Chromosome, s.POPULATION_SIZE)
 	for i := 0; i < s.POPULATION_SIZE; i++ {
 		new_generation[i] = chromosomes[i]

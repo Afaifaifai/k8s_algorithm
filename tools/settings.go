@@ -10,7 +10,7 @@ const ITEMS_WEIGHT_FILE string = "data/values_1dim_5items.txt" // each item weig
 const PREVIOUS_WEIGHT_FILE string = "data/old_values_1dim.txt" // the weight in the previous state of knapsack (previous load of the nodes)
 const WEIGHT_LIMIT_FILE string = "data/knapsack_1dim.txt"      // the weight limit of knapsack (the capacity of the nodes)
 const DATA_SPLIT string = " "                                  // the split character that seperate the data in a line
-const PRINT_PERMIT bool = true
+const PRINT_PERMIT bool = false
 
 const KNAPSACK_QUANTITY int = WORKER_NODES_QUANTITY // the quantity of worker nodes is mapped to the quantity of knapsacks
 const ITEM_QUANTITY int = 5                         // the number of items
@@ -19,7 +19,7 @@ const ITEM_QUANTITY int = 5                         // the number of items
 const POPULATION_SIZE = ITEM_QUANTITY         // each item pick a  knapsack
 const SOLUTION_SIZE int = 100                 // the number of solutions
 const CHROMOSOME_QUANTITY int = SOLUTION_SIZE // the number of solutions
-const GA_ITERATIONS int = 100
+const GA_ITERATIONS int = 1000
 const MUTATION_RATE float64 = 0.1
 const CROSSOVER_RATE float64 = 0.9
 const SELECTION_RATE float64 = 0.4

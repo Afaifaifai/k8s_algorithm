@@ -89,7 +89,7 @@ func Run(items_weights [][s.DIMENSION]float64,
 
 func Selection(solutions [][s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64, fitness_of_solutions []float64) [][s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64 {
 	var fitness_sort_in_idx []int = Argsort(fitness_of_solutions)
-	var elite_parents [][s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64 = make([][4][1000]float64, s.ELITE_QUANTITY)
+	var elite_parents [][s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64 = make([][s.KNAPSACK_QUANTITY][s.ITEM_QUANTITY]float64, s.ELITE_QUANTITY)
 	for i := 0; i < s.ELITE_QUANTITY; i++ {
 		elite_parents[i] = solutions[fitness_sort_in_idx[i]]
 	}

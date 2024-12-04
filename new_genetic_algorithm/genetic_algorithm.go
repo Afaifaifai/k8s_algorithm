@@ -107,12 +107,16 @@ func born(genes []int) Chromosome {
 }
 
 func replacement(chromosomes []Chromosome) []Chromosome {
+	// fmt.Println(len(chromosomes))
 	chromosomes = argsort(chromosomes)
 	// fmt.Println(len(chromosomes))
-	var new_generation []Chromosome = make([]Chromosome, s.POPULATION_SIZE)
-	for i := 0; i < s.POPULATION_SIZE; i++ {
+
+	// fmt.Println(len(chromosomes))
+	var new_generation []Chromosome = make([]Chromosome, s.SOLUTION_SIZE)
+	for i := 0; i < s.SOLUTION_SIZE; i++ {
 		new_generation[i] = chromosomes[i]
 	}
+	// fmt.Println(len(new_generation))
 	return new_generation
 }
 

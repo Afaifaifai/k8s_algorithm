@@ -78,11 +78,11 @@ func Run(
 		}
 
 		gBest_fitness_in_iterations = append(gBest_fitness_in_iterations, gBest_fitness)
-		if iter%100 == 0 {
-			fmt.Printf("Iteration %d \tGlobal Best fitness %.10f  \tIteration Best position %.10f \n", iter, gBest_fitness, iter_gBest_fitness)
+		if iter%100 == 0 && s.PRINT_PERMIT {
+			fmt.Printf("Iteration %5d \tGlobal Best fitness %.10f  \tIteration Best position %.10f \n", iter, gBest_fitness, iter_gBest_fitness)
 		}
 	}
-	fmt.Println("\nIteration End", "Best fitness", gBest_fitness)
+	// fmt.Println("\nIteration End", "Best fitness", gBest_fitness)
 	return gBest_fitness, gBest_position, gBest_fitness_in_iterations
 }
 

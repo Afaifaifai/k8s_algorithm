@@ -2,13 +2,14 @@ package tools
 
 import "math"
 
-const DIMENSION int = 3             // the dimantion of parameters
+const DIMENSION int = 1             // the dimantion of parameters
 const WORKER_NODES_QUANTITY int = 4 // the number of worker nodes
 
-const ITEMS_WEIGHT_FILE string = "data/values.txt"        // each item weight (each pod cost)
-const PREVIOUS_WEIGHT_FILE string = "data/old_values.txt" // the weight in the previous state of knapsack (previous load of the nodes)
-const WEIGHT_LIMIT_FILE string = "data/knapsack.txt"      // the weight limit of knapsack (the capacity of the nodes)
-const DATA_SPLIT string = " "                             // the split character that seperate the data in a line
+const ITEMS_WEIGHT_FILE string = "data/values_1dim.txt"        // each item weight (each pod cost)
+const PREVIOUS_WEIGHT_FILE string = "data/old_values_1dim.txt" // the weight in the previous state of knapsack (previous load of the nodes)
+const WEIGHT_LIMIT_FILE string = "data/knapsack_1dim.txt"      // the weight limit of knapsack (the capacity of the nodes)
+const DATA_SPLIT string = " "                                  // the split character that seperate the data in a line
+const PRINT_PERMIT bool = false
 
 const KNAPSACK_QUANTITY int = WORKER_NODES_QUANTITY // the quantity of worker nodes is mapped to the quantity of knapsacks
 const ITEM_QUANTITY int = 1000                      // the number of items
@@ -24,7 +25,7 @@ const SELECTION_RATE float64 = 0.4
 const ELITE_QUANTITY = int(float64(SOLUTION_SIZE) * SELECTION_RATE)
 
 // PSO parameters
-const PSO_ITERATIONS int = 100000
+const PSO_ITERATIONS int = 10000
 const PARTICLE_QUANTITY int = 100
 const LAMBDA float64 = 5
 
@@ -32,7 +33,7 @@ const W = 0.729
 const C1 = 1.49445
 const C2 = 1.49445
 
-const EPSILON float64 = 1 / float64(ITEM_QUANTITY) * 5 // basic exploration rate
+const EPSILON float64 = 1 / float64(ITEM_QUANTITY) * 1 // basic exploration rate
 
 // Hybrid genetic algorithm parameters
 // GA
@@ -51,7 +52,7 @@ const COOLING_RATE float64 = 0.95
 const MINIMUM_TEMPERATURE float64 = 1e-3
 
 // NSGA
-var NSGA_MAX_FITNESSES [DIMENSION]float64 = [DIMENSION]float64{math.MaxFloat64, math.MaxFloat64, math.MaxFloat64}
+var NSGA_MAX_FITNESSES [DIMENSION]float64 = [DIMENSION]float64{math.MaxFloat64}
 
 const NSGA_MAX_DISTANCE float64 = math.MaxFloat64/float64(DIMENSION) - 0.1
 

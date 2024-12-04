@@ -42,7 +42,10 @@ func Run(
 		scout_bees(food_sources)
 
 		best_fitness_in_iterations = append(best_fitness_in_iterations, best_fitness)
-		fmt.Printf("Best Fitness: %.10f, Iteration: %d\n", best_fitness, iter)
+
+		if s.PRINT_PERMIT {
+			fmt.Printf("Best Fitness: %.10f, Iteration: %d\n", best_fitness, iter)
+		}
 	}
 
 	return best_fitness, best_fitness_solution, best_fitness_in_iterations

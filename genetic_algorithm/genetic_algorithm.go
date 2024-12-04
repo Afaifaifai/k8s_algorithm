@@ -80,7 +80,9 @@ func Run(items_weights [][s.DIMENSION]float64,
 		// cmd := exec.Command("cmd", "/c", "cls")
 		// cmd.Stdout = os.Stdout
 		// cmd.Run()
-		fmt.Printf("Best Fitness: %.2f, Iteration: %d\n", best_fitness, iter)
+		if s.PRINT_PERMIT {
+			fmt.Printf("Best Fitness: %.2f, Iteration: %d\n", best_fitness, iter)
+		}
 	}
 	return best_fitness, best_fitness_solution, best_fitness_in_iterations
 }

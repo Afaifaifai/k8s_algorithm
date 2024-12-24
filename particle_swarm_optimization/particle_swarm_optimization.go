@@ -17,14 +17,14 @@ type Particle struct {
 	pBest_fitness  float64   // Persional best fitness
 }
 
-var Items_weights [][s.DIMENSION]float64
-var Previous_state_of_knapsack [][s.DIMENSION]float64
-var Limit_of_knapsack [][s.DIMENSION]float64
+var Items_weights [][]float64
+var Previous_state_of_knapsack [][]float64
+var Limit_of_knapsack [][]float64
 
 func Run(
-	items_weights [][s.DIMENSION]float64,
-	previous_state_of_knapsack [][s.DIMENSION]float64,
-	limit_of_knapsack [][s.DIMENSION]float64,
+	items_weights [][]float64,
+	previous_state_of_knapsack [][]float64,
+	limit_of_knapsack [][]float64,
 ) (float64, []int, []float64) {
 
 	/*
@@ -87,7 +87,10 @@ func Run(
 }
 
 func (particle *Particle) update_fitness_and_pBest() {
-	var knapsack_weights [s.DIMENSION][s.KNAPSACK_QUANTITY]float64
+	var knapsack_weights [][]float64 = make([][]float64, s.DIMENSION)
+	for i := 0; i < s.DIMENSION; i++ {
+		knapsack_weights[i] = make([]float64, s.KNAPSACK_QUANTITY)
+	}
 
 	for item_idx, ks_idx := range particle.Position { // Current weight of n dimensions
 		for dim := 0; dim < s.DIMENSION; dim++ {
@@ -226,7 +229,10 @@ func generate_valid_position() []int {
 
 Outer_loop:
 	for {
-		var knapsack_weights [s.DIMENSION][s.KNAPSACK_QUANTITY]float64
+		var knapsack_weights [][]float64 = make([][]float64, s.DIMENSION)
+		for i := 0; i < s.DIMENSION; i++ {
+			knapsack_weights[i] = make([]float64, s.KNAPSACK_QUANTITY)
+		}
 
 		for i := 0; i < s.ITEM_QUANTITY; i++ {
 			var ks_idx int = rand.Intn(s.KNAPSACK_QUANTITY)

@@ -8,16 +8,17 @@ import (
 	"sort"
 )
 
-var Items_weights [][s.DIMENSION]float64
-var Previous_state_of_knapsack [][s.DIMENSION]float64
-var Limit_of_knapsack [][s.DIMENSION]float64
+var Items_weights [][]float64
+var Previous_state_of_knapsack [][]float64
+var Limit_of_knapsack [][]float64
 
 func Run(
-	items_weights [][s.DIMENSION]float64,
-	previous_state_of_knapsack [][s.DIMENSION]float64,
-	limit_of_knapsack [][s.DIMENSION]float64,
+	items_weights [][]float64,
+	previous_state_of_knapsack [][]float64,
+	limit_of_knapsack [][]float64,
 ) (float64, []int, []float64) {
 
+	fmt.Println(s.DIMENSION, s.ITEM_QUANTITY)
 	Items_weights = items_weights
 	Previous_state_of_knapsack = previous_state_of_knapsack
 	Limit_of_knapsack = limit_of_knapsack
@@ -92,7 +93,7 @@ func mutate(genes []int) {
 }
 
 func born(genes []int) Chromosome {
-	var knapsack_dim_weights *[s.KNAPSACK_QUANTITY][s.DIMENSION]float64 = calculate_weights(genes)
+	var knapsack_dim_weights [][]float64 = calculate_weights(genes)
 	if under_limit(knapsack_dim_weights) {
 		return Chromosome{
 			genes:   genes,

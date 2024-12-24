@@ -26,7 +26,7 @@ func initialize_chromosomes() []Chromosome {
 
 func generate_uniform_genes_fitness() ([]int, float64) {
 	var genes []int = make([]int, s.POPULATION_SIZE)
-	var knapsack_dim_weights *[s.KNAPSACK_QUANTITY][s.DIMENSION]float64
+	var knapsack_dim_weights [][]float64
 	for {
 		for i := 0; i < s.POPULATION_SIZE; i++ {
 			genes[i] = rand.Intn(s.KNAPSACK_QUANTITY)
@@ -40,8 +40,16 @@ func generate_uniform_genes_fitness() ([]int, float64) {
 	return genes, calculate_fitness(knapsack_dim_weights)
 }
 
-func calculate_weights(genes []int) *[s.KNAPSACK_QUANTITY][s.DIMENSION]float64 {
-	var knapsack_dim_weights [s.KNAPSACK_QUANTITY][s.DIMENSION]float64
+func calculate_weights(genes []int) [][]float64 {
+	var knapsack_dim_weights [][]float64 = make([][]float64, s.KNAPSACK_QUANTITY)
+	for i := 0; i < s.KNAPSACK_QUANTITY; i++ {
+		knapsack_dim_weights[i] = make([]float64, s.DIMENSION)
+	}
+
+	for i := 0; i < s.DIMENSION; i++ {
+		knapsack_dim_weights[i] = make([]float64, s.DIMENSION)
+	}
+
 	for item_idx, ks_idx := range genes {
 		for dim_idx := 0; dim_idx < s.DIMENSION; dim_idx++ {
 			knapsack_dim_weights[ks_idx][dim_idx] += Items_weights[item_idx][dim_idx]
@@ -54,10 +62,10 @@ func calculate_weights(genes []int) *[s.KNAPSACK_QUANTITY][s.DIMENSION]float64 {
 		}
 	}
 
-	return &knapsack_dim_weights
+	return knapsack_dim_weights
 }
 
-func under_limit(knapsack_dim_weights *[s.KNAPSACK_QUANTITY][s.DIMENSION]float64) bool {
+func under_limit(knapsack_dim_weights [][]float64) bool {
 	for ks_idx := 0; ks_idx < s.KNAPSACK_QUANTITY; ks_idx++ {
 		for dim_idx := 0; dim_idx < s.DIMENSION; dim_idx++ {
 			if knapsack_dim_weights[ks_idx][dim_idx] > Limit_of_knapsack[ks_idx][dim_idx] {
@@ -69,18 +77,22 @@ func under_limit(knapsack_dim_weights *[s.KNAPSACK_QUANTITY][s.DIMENSION]float64
 	return true
 }
 
-func calculate_fitness(knapsack_dim_weights *[s.KNAPSACK_QUANTITY][s.DIMENSION]float64) float64 {
-	var dim_knapsack_weights [s.DIMENSION][s.KNAPSACK_QUANTITY]float64
+func calculate_fitness(knapsack_dim_weights [][]float64) float64 {
+	var dim_knapsack_weights [][]float64 = make([][]float64, len(knapsack_dim_weights[0]))
+	for i := 0; i < len(dim_knapsack_weights); i++ {
+		dim_knapsack_weights[i] = make([]float64, len(knapsack_dim_weights))
+	}
+
 	var fitness float64 = 0
-	for ks_idx := 0; ks_idx < s.KNAPSACK_QUANTITY; ks_idx++ {
-		for dim_idx := 0; dim_idx < s.DIMENSION; dim_idx++ {
+	for ks_idx := 0; ks_idx < len(knapsack_dim_weights); ks_idx++ {
+		for dim_idx := 0; dim_idx < len(knapsack_dim_weights[ks_idx]); dim_idx++ {
 			dim_knapsack_weights[dim_idx][ks_idx] = knapsack_dim_weights[ks_idx][dim_idx] / Limit_of_knapsack[ks_idx][dim_idx]
 		}
 	}
 
 	for _, weights_percestage := range dim_knapsack_weights {
 		// fmt.Println(weights_percestage)
-		fitness += stat.StdDev(weights_percestage[:], nil)
+		fitness += stat.StdDev(weights_percestage, nil)
 	}
 
 	return fitness

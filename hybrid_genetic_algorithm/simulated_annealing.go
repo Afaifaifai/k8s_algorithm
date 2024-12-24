@@ -23,7 +23,7 @@ func Simulated_Annealing(solution []int, fitness float64) ([]int, float64) {
 			neighbor[rand_item_idx] = rand.Intn(s.KNAPSACK_QUANTITY)
 		}
 
-		var neighbor_weights *[s.KNAPSACK_QUANTITY][s.DIMENSION]float64 = calculate_weights(neighbor)
+		var neighbor_weights [][]float64 = calculate_weights(neighbor)
 		var neighbor_fitness float64 = calculate_fitness(neighbor_weights)
 		var delta float64 = neighbor_fitness - fitness
 

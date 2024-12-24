@@ -13,17 +13,17 @@ type FoodSource struct {
 	trials     int
 }
 
-var Items_weights [][s.DIMENSION]float64
-var Previous_state_of_knapsack [][s.DIMENSION]float64
-var Limit_of_knapsack [][s.DIMENSION]float64
+var Items_weights [][]float64
+var Previous_state_of_knapsack [][]float64
+var Limit_of_knapsack [][]float64
 
 var best_fitness float64 = math.MaxFloat64
 var best_fitness_solution []int
 
 func Run(
-	items_weights [][s.DIMENSION]float64,
-	previous_state_of_knapsack [][s.DIMENSION]float64,
-	limit_of_knapsack [][s.DIMENSION]float64,
+	items_weights [][]float64,
+	previous_state_of_knapsack [][]float64,
+	limit_of_knapsack [][]float64,
 ) (float64, []int, []float64) {
 
 	Items_weights = items_weights
@@ -119,7 +119,7 @@ func generate_neighbor_food_source(food_source FoodSource) FoodSource {
 		population[rand_idx] = rand.Intn(s.KNAPSACK_QUANTITY)
 	}
 
-	var knapsack_dim_weights *[s.KNAPSACK_QUANTITY][s.DIMENSION]float64 = calculate_weights(population)
+	var knapsack_dim_weights [][]float64 = calculate_weights(population)
 	return FoodSource{population, calculate_fitness(knapsack_dim_weights), 0}
 }
 

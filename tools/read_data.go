@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func Read_data(filename string) [][DIMENSION]float64 {
+func Read_data(filename string) [][]float64 {
 	file, err := os.Open(filename)
 	if err != nil {
 		fmt.Println("Cannot locate the file:", err)
@@ -18,14 +18,14 @@ func Read_data(filename string) [][DIMENSION]float64 {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	var results [][DIMENSION]float64
+	var results [][]float64
 
 	for scanner.Scan() {
 		line := scanner.Text()
 
 		values := strings.Split(line, " ")
-		var nums_dim [DIMENSION]float64
-		for dim, value := range values {
+		var nums_dim []float64
+		for _, value := range values {
 			value = strings.TrimSuffix(value, "m")
 
 			var num float64
@@ -34,7 +34,7 @@ func Read_data(filename string) [][DIMENSION]float64 {
 				fmt.Println("Invalid format of float64:", err)
 				continue
 			}
-			nums_dim[dim] = num
+			nums_dim = append(nums_dim, num)
 		}
 		results = append(results, nums_dim)
 	}

@@ -1,9 +1,25 @@
 package tools
 
-import "math"
+var (
+	DIMENSION         int
+	ITEM_QUANTITY     int // the number of items
+	KNAPSACK_QUANTITY int
+)
 
-const DIMENSION int = 1             // the dimantion of parameters
-const WORKER_NODES_QUANTITY int = 4 // the number of worker nodes
+func Setup(dim int, item_quantity int, knapsack_quantity int) {
+	DIMENSION = dim
+	ITEM_QUANTITY = item_quantity
+	KNAPSACK_QUANTITY = knapsack_quantity
+
+	// GA
+	POPULATION_SIZE = ITEM_QUANTITY
+
+	// PSO
+	EPSILON = 1 / float64(ITEM_QUANTITY) * 1
+}
+
+// const DIMENSION int = 1             // the dimantion of parameters
+// const WORKER_NODES_QUANTITY int = 4 // the number of worker nodes
 
 const RESULT_DIR string = "results/"                           // the directory of results
 const ITEMS_WEIGHT_FILE string = "data/values_1dim_5items.txt" // each item weight (each pod cost)
@@ -12,11 +28,10 @@ const WEIGHT_LIMIT_FILE string = "data/knapsack_1dim.txt"      // the weight lim
 const DATA_SPLIT string = " "                                  // the split character that seperate the data in a line
 const PRINT_PERMIT bool = false
 
-const KNAPSACK_QUANTITY int = WORKER_NODES_QUANTITY // the quantity of worker nodes is mapped to the quantity of knapsacks
-const ITEM_QUANTITY int = 5                         // the number of items
+// const KNAPSACK_QUANTITY int = WORKER_NODES_QUANTITY // the quantity of worker nodes is mapped to the quantity of knapsacks
 
 // Genetic algorithm parameters
-const POPULATION_SIZE = ITEM_QUANTITY         // each item pick a  knapsack
+var POPULATION_SIZE int                       // each item pick a  knapsack
 const SOLUTION_SIZE int = 100                 // the number of solutions
 const CHROMOSOME_QUANTITY int = SOLUTION_SIZE // the number of solutions
 const GA_ITERATIONS int = 1000
@@ -34,7 +49,7 @@ const W = 0.729
 const C1 = 1.49445
 const C2 = 1.49445
 
-const EPSILON float64 = 1 / float64(ITEM_QUANTITY) * 1 // basic exploration rate
+var EPSILON float64 // basic exploration rate
 
 // Hybrid genetic algorithm parameters
 // GA
@@ -53,9 +68,9 @@ const COOLING_RATE float64 = 0.95
 const MINIMUM_TEMPERATURE float64 = 1e-3
 
 // NSGA
-var NSGA_MAX_FITNESSES [DIMENSION]float64 = [DIMENSION]float64{math.MaxFloat64}
+// var NSGA_MAX_FITNESSES [DIMENSION]float64 = [DIMENSION]float64{math.MaxFloat64}
 
-const NSGA_MAX_DISTANCE float64 = math.MaxFloat64/float64(DIMENSION) - 0.1
+// const NSGA_MAX_DISTANCE float64 = math.MaxFloat64/float64(DIMENSION) - 0.1
 
 // ABC
 const COLONY_SIZE int = 100

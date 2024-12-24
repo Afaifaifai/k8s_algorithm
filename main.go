@@ -1,23 +1,28 @@
 package main
 
 import (
-	ABC "k8s_algorithm/artificial_bee_colony"
 	HGA "k8s_algorithm/hybrid_genetic_algorithm"
 	GA "k8s_algorithm/new_genetic_algorithm"
 	PSO "k8s_algorithm/particle_swarm_optimization"
 
+	ABC "k8s_algorithm/artificial_bee_colony"
+
 	// NSGA "k8s_algorithm/nondominated_sorting_genetic_algorithm"
 	"fmt"
+	// tools "k8s_algorithm/tools"
 
 	"k8s_algorithm/tools"
 )
 
 func main() {
 	// tools.Transform_1dim()
+	var items_weights [][]float64 = tools.Read_data(tools.ITEMS_WEIGHT_FILE)
+	var previous_state_of_knapsack [][]float64 = tools.Read_data(tools.PREVIOUS_WEIGHT_FILE)
+	var capacity_of_knapsack [][]float64 = tools.Read_data(tools.WEIGHT_LIMIT_FILE)
 
-	var items_weights [][tools.DIMENSION]float64 = tools.Read_data(tools.ITEMS_WEIGHT_FILE)
-	var previous_state_of_knapsack [][tools.DIMENSION]float64 = tools.Read_data(tools.PREVIOUS_WEIGHT_FILE)
-	var capacity_of_knapsack [][tools.DIMENSION]float64 = tools.Read_data(tools.WEIGHT_LIMIT_FILE)
+	var dim, item_quantity, knapsack_quantity int = len(items_weights[0]), len(items_weights), len(capacity_of_knapsack)
+	tools.Setup(dim, item_quantity, knapsack_quantity)
+	fmt.Println(tools.DIMENSION, tools.ITEM_QUANTITY)
 
 	// GA
 	fmt.Println("\nGA is running ...")
@@ -43,8 +48,8 @@ func main() {
 	fmt.Printf("ABC Best fitness %f\n", abc_best_fitness)
 	fmt.Printf("ABC Best solution %v\n", abc_best_fitness_solution)
 
-	// NSGA.Run(items_weights, previous_state_of_knapsack, capacity_of_knapsack)
-	tools.Write_data([][]int{ga_best_fitness_solution, pso_best_fitness_solution, hga_best_fitness_solution, abc_best_fitness_solution}, []string{"GA", "PSO", "HGA", "ABC"})
+	// // NSGA.Run(items_weights, previous_state_of_knapsack, capacity_of_knapsack)
+	// tools.Write_data([][]int{ga_best_fitness_solution, pso_best_fitness_solution, hga_best_fitness_solution, abc_best_fitness_solution}, []string{"GA", "PSO", "HGA", "ABC"})
 }
 
 //

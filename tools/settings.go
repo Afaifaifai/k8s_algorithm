@@ -29,11 +29,11 @@ func Setup(dim int, item_quantity int, knapsack_quantity int) {
 // const DIMENSION int = 1             // the dimantion of parameters
 // const WORKER_NODES_QUANTITY int = 4 // the number of worker nodes
 
-const RESULT_DIR string = "results/"                      // the directory of results
-const ITEMS_WEIGHT_FILE string = "data/values.txt"        // each item weight (each pod cost)
-const PREVIOUS_WEIGHT_FILE string = "data/old_values.txt" // the weight in the previous state of knapsack (previous load of the nodes)
-const WEIGHT_LIMIT_FILE string = "data/knapsack.txt"      // the weight limit of knapsack (the capacity of the nodes)
-const DATA_SPLIT string = " "                             // the split character that seperate the data in a line
+const RESULT_DIR string = "results/"                           // the directory of results
+const ITEMS_WEIGHT_FILE string = "data/values_1dim_5items.txt" // each item weight (each pod cost)
+const PREVIOUS_WEIGHT_FILE string = "data/old_values_1dim.txt" // the weight in the previous state of knapsack (previous load of the nodes)
+const WEIGHT_LIMIT_FILE string = "data/knapsack_1dim.txt"      // the weight limit of knapsack (the capacity of the nodes)
+const DATA_SPLIT string = " "                                  // the split character that seperate the data in a line
 const PRINT_PERMIT bool = false
 
 // const KNAPSACK_QUANTITY int = WORKER_NODES_QUANTITY // the quantity of worker nodes is mapped to the quantity of knapsacks

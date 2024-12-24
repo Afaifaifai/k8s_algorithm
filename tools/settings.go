@@ -1,5 +1,7 @@
 package tools
 
+import "math"
+
 var (
 	DIMENSION         int
 	ITEM_QUANTITY     int // the number of items
@@ -16,16 +18,22 @@ func Setup(dim int, item_quantity int, knapsack_quantity int) {
 
 	// PSO
 	EPSILON = 1 / float64(ITEM_QUANTITY) * 1
+
+	// NSGA
+	for i := 0; i < DIMENSION; i++ {
+		NSGA_MAX_FITNESSES = append(NSGA_MAX_FITNESSES, math.MaxFloat64)
+	}
+	NSGA_MAX_DISTANCE = math.MaxFloat64/float64(DIMENSION) - 0.1
 }
 
 // const DIMENSION int = 1             // the dimantion of parameters
 // const WORKER_NODES_QUANTITY int = 4 // the number of worker nodes
 
-const RESULT_DIR string = "results/"                           // the directory of results
-const ITEMS_WEIGHT_FILE string = "data/values_1dim_5items.txt" // each item weight (each pod cost)
-const PREVIOUS_WEIGHT_FILE string = "data/old_values_1dim.txt" // the weight in the previous state of knapsack (previous load of the nodes)
-const WEIGHT_LIMIT_FILE string = "data/knapsack_1dim.txt"      // the weight limit of knapsack (the capacity of the nodes)
-const DATA_SPLIT string = " "                                  // the split character that seperate the data in a line
+const RESULT_DIR string = "results/"                      // the directory of results
+const ITEMS_WEIGHT_FILE string = "data/values.txt"        // each item weight (each pod cost)
+const PREVIOUS_WEIGHT_FILE string = "data/old_values.txt" // the weight in the previous state of knapsack (previous load of the nodes)
+const WEIGHT_LIMIT_FILE string = "data/knapsack.txt"      // the weight limit of knapsack (the capacity of the nodes)
+const DATA_SPLIT string = " "                             // the split character that seperate the data in a line
 const PRINT_PERMIT bool = false
 
 // const KNAPSACK_QUANTITY int = WORKER_NODES_QUANTITY // the quantity of worker nodes is mapped to the quantity of knapsacks
@@ -68,9 +76,9 @@ const COOLING_RATE float64 = 0.95
 const MINIMUM_TEMPERATURE float64 = 1e-3
 
 // NSGA
-// var NSGA_MAX_FITNESSES [DIMENSION]float64 = [DIMENSION]float64{math.MaxFloat64}
+var NSGA_MAX_FITNESSES []float64
 
-// const NSGA_MAX_DISTANCE float64 = math.MaxFloat64/float64(DIMENSION) - 0.1
+var NSGA_MAX_DISTANCE float64 = math.MaxFloat64/float64(DIMENSION) - 0.1
 
 // ABC
 const COLONY_SIZE int = 100

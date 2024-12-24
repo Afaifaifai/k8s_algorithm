@@ -7,14 +7,14 @@ import (
 	"sort"
 )
 
-var Items_weights [][s.DIMENSION]float64
-var Previous_state_of_knapsack [][s.DIMENSION]float64
-var Limit_of_knapsack [][s.DIMENSION]float64
+var Items_weights [][]float64
+var Previous_state_of_knapsack [][]float64
+var Limit_of_knapsack [][]float64
 
 func Run(
-	items_weights [][s.DIMENSION]float64,
-	previous_state_of_knapsack [][s.DIMENSION]float64,
-	limit_of_knapsack [][s.DIMENSION]float64,
+	items_weights [][]float64,
+	previous_state_of_knapsack [][]float64,
+	limit_of_knapsack [][]float64,
 ) {
 
 	Items_weights = items_weights
@@ -90,11 +90,11 @@ func mutate(genes []int) {
 }
 
 func born(genes []int) Chromosome {
-	var knapsack_dim_weights *[s.KNAPSACK_QUANTITY][s.DIMENSION]float64 = calculate_weights(genes)
+	var knapsack_dim_weights [][]float64 = calculate_weights(genes)
 	if under_limit(knapsack_dim_weights) {
 		return Chromosome{
 			genes:   genes,
-			fitness: *calculate_fitness(knapsack_dim_weights),
+			fitness: calculate_fitness(knapsack_dim_weights),
 		}
 	} else {
 		return Chromosome{
@@ -192,8 +192,8 @@ func nondominated_sorting(chromosomes []Chromosome, selecting_quantity int) []Ch
 
 type Data struct {
 	idx                   int
-	population            [s.DIMENSION]float64
-	crowding_distance     [s.DIMENSION]float64
+	population            []float64
+	crowding_distance     []float64
 	crowding_distance_sum float64
 }
 
@@ -203,7 +203,7 @@ func crowding_distance_sorting(population_idxes []int, chromosomes []Chromosome)
 		data = append(data, Data{
 			idx:                   population_idx,
 			population:            chromosomes[population_idx].fitness,
-			crowding_distance:     [s.DIMENSION]float64{0, 0, 0},
+			crowding_distance:     []float64{0, 0, 0},
 			crowding_distance_sum: 0.0,
 		})
 	}

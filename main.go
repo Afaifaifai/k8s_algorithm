@@ -69,9 +69,9 @@ func main() {
 	start = time.Now()
 	abc_best_fitness, abc_best_fitness_solution, _ := ABC.Run(items_weights, previous_state_of_knapsack, capacity_of_knapsack)
 	elapsed = time.Since(start)
-	fmt.Printf("ABC execution time : %.6f ms\n\n", elapsed.Seconds()*1000)
 	fmt.Printf("ABC Best fitness %f\n", abc_best_fitness)
 	fmt.Printf("ABC Best solution %v\n", abc_best_fitness_solution)
+	fmt.Printf("ABC execution time : %.6f ms\n\n", elapsed.Seconds()*1000)
 
 	// start = time.Now()
 	// NSGA.Run(items_weights, previous_state_of_knapsack, capacity_of_knapsack)
